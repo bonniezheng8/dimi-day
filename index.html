@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>Dimi's Path to World Domination</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>👑</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Header with cool logo */
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 24px 16px 18px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .logo-icon {
+            font-size: 2.5em;
+            filter: drop-shadow(0 2px 12px rgba(102, 126, 234, 0.7));
+            animation: float 3s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-6px) rotate(5deg); }
+        }
+        
+        .logo-text {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .logo-main {
+            font-size: clamp(0.85em, 4vw, 1.35em);
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            text-transform: uppercase;
+            font-style: italic;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        /* Responsive for very small screens */
+        @media (max-width: 400px) {
+            .logo-container {
+                gap: 8px;
+            }
+            .logo-icon {
+                font-size: 2em;
+            }
+        }
+        
+        @media (max-width: 340px) {
+            .logo-main {
+                font-size: 0.75em;
+                letter-spacing: -0.3px;
+            }
+            .logo-icon {
+                font-size: 1.8em;
+            }
+        }
+        
+        .streak-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(255, 82, 82, 0.2) 100%);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            color: #FF6B6B;
+            font-size: 0.95em;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            flex-shrink: 0;
+        }
+        
+        .date-display {
+            font-size: 0.8em;
+            color: #999;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        
+        /* Progress Circle */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 16px;
+            background: #121212;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .progress-ring {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.5s ease;
+            fill: none;
+            stroke: #1a1a1a;
+            stroke-width: 7;
+        }
+        
+        .progress-ring-circle.active {
+            stroke: url(#gradient);
+            stroke-linecap: round;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.4em;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        
+        .progress-info {
+            flex: 1;
+        }
+        
+        .progress-label {
+            font-size: 0.8em;
+            color: #aaa;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .progress-stats {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.7em;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        
+        /* Day Navigation - Fixed scrolling */
+        .day-nav {
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            gap: 8px;
+            padding: 16px;
+            background: #0f0f0f;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+        
+        .day-nav::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .day-chip {
+            padding: 11px 18px;
+            background: #1a1a1a;
+            border: 2px solid #222;
+            border-radius: 24px;
+            color: #999;
+            font-weight: 700;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            white-space: nowrap;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .day-chip.today::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 8px;
+            height: 8px;
+            background: #FF6B6B;
+            border-radius: 50%;
+            border: 2px solid #0f0f0f;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+        
+        .day-chip.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            border-color: rgba(102, 126, 234, 0.6);
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .day-chip.today {
+            border-color: rgba(255, 107, 107, 0.5);
+        }
+        
+        .day-chip.today.active {
+            border-color: rgba(102, 126, 234, 0.8);
+        }
+        
+        /* Content */
+        .content {
+            padding: 16px;
+            padding-bottom: 100px;
+        }
+        
+        /* Motivational Banner */
+        .motivation-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1em;
+            color: #ffffff;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            animation: slideDown 0.5s ease;
+            line-height: 1.4;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Task Categories */
+        .category-section {
+            margin-bottom: 24px;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-left: 4px;
+        }
+        
+        .category-icon {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            box-shadow: 0 0 12px currentColor;
+        }
+        
+        .category-title {
+            font-size: 0.7em;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #777;
+        }
+        
+        /* Task Card - Enhanced readability */
+        .task-card {
+            background: #141414;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 12px;
+            border-left: 4px solid;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .task-card:active::before {
+            opacity: 1;
+        }
+        
+        .task-card.completed {
+            opacity: 0.4;
+            background: #0f0f0f;
+        }
+        
+        .task-card.completed .task-content {
+            text-decoration: line-through;
+        }
+        
+        .task-card.trading { border-left-color: #FF6B6B; }
+        .task-card.luxury { border-left-color: #4ECDC4; }
+        .task-card.creative { border-left-color: #B794F6; }
+        .task-card.teaching { border-left-color: #F59E0B; }
+        .task-card.personal { border-left-color: #06B6D4; }
+        
+        .task-main {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        
+        .checkbox-container {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+        }
+        
+        .custom-checkbox {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #333;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            background: #0a0a0a;
+        }
+        
+        .custom-checkbox.checked {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .custom-checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            color: #fff;
+            font-size: 22px;
+            font-weight: 800;
+            animation: checkPop 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        @keyframes checkPop {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.3) rotate(180deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(360deg);
+            }
+        }
+        
+        .task-content {
+            flex: 1;
+        }
+        
+        .task-time {
+            font-size: 0.7em;
+            color: #888;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        
+        .task-title {
+            font-size: 1.05em;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .task-notes {
+            font-size: 0.9em;
+            color: #aaa;
+            line-height: 1.6;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-emoji {
+            font-size: 4em;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+        
+        .empty-text {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+        
+        .empty-subtext {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        /* Bottom Actions */
+        .bottom-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0f0f0f;
+            padding: 16px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-secondary {
+            background: #1a1a1a;
+            color: #888;
+            border: 2px solid #222;
+        }
+        
+        .btn-secondary:active {
+            background: #222;
+            transform: scale(0.95);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            padding: 16px 28px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 0.95em;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #222;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-top">
+            <div class="logo-container">
+                <div class="logo-icon">👑</div>
+                <div class="logo-text">
+                    <div class="logo-main">Dimi's Path to World Domination</div>
+                </div>
+            </div>
+            <div class="streak-badge">
+                <span>🔥</span>
+                <span id="streakCount">0</span>
+            </div>
+        </div>
+        <div class="date-display" id="dateDisplay"></div>
+    </div>
+    
+    <div class="progress-container">
+        <div class="progress-ring">
+            <svg width="80" height="80">
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <circle class="progress-ring-circle" r="34" cx="40" cy="40"/>
+                <circle class="progress-ring-circle active" r="34" cx="40" cy="40"
+                        stroke-dasharray="213.628" stroke-dashoffset="213.628" id="progressCircle"/>
+            </svg>
+            <div class="progress-text" id="progressText">0%</div>
+        </div>
+        <div class="progress-info">
+            <div class="progress-label">Today's Progress</div>
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="completedCount">0</div>
+                    <div class="stat-label">Done</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="day-nav" id="dayNav"></div>
+    
+    <div class="content" id="content">
+        <div class="loading">
+            <div class="spinner"></div>
+            <div>Loading schedule...</div>
+        </div>
+    </div>
+    
+    <div class="bottom-actions">
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+        <button class="btn btn-primary" id="saveBtn">Save</button>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const schedules = {
+            mon: [
+                {time: '6:30-7:30', activity: 'Dog Walk + Breakfast', type: 'personal', notes: 'Non-negotiable anchor', category: 'Morning Routine'},
+                {time: '7:30-9:00', activity: 'Pre-market Prep', type: 'luxury', notes: 'Email, inventory, research', category: 'Business Prep'},
+                {time: '9:30-12:30', activity: 'Trading Session', type: 'trading', notes: 'Phone OFF, hyperfocus mode', category: 'Core Work'},
+                {time: '12:30-1:30', activity: 'Dog Walk + Lunch', type: 'personal', notes: 'Mental reset break', category: 'Break Time'},
+                {time: '1:30-4:30', activity: 'Luxury Business Block', type: 'luxury', notes: 'Clients, deals, marketing', category: 'Core Work'},
+                {time: '4:30-5:00', activity: 'Business Wrap', type: 'luxury', notes: 'Close loops, set priorities', category: 'Business Prep'},
+                {time: '5:00-6:30', activity: 'Rap Practice', type: 'creative', notes: 'Writing, freestyles, drills', category: 'Creative Time'},
+                {time: '6:30-7:30', activity: 'Gym Class', type: 'personal', notes: 'External accountability', category: 'Movement'},
+                {time: '7:30+', activity: 'Dinner + Chill', type: 'personal', notes: 'Meal delivery, relax', category: 'Evening'},
+            ],
+            tue: [
+                {time: '6:30-7:30', activity: 'Dog Walk + Breakfast', type: 'personal', notes: 'Non-negotiable anchor', category: 'Morning Routine'},
+                {time: '8:00-11:30', activity: 'Zoom Classes', type: 'teaching', notes: 'Calendly scheduled', category: 'Teaching'},
+                {time: '12:00-1:00', activity: 'Dog Walk + Lunch', type: 'personal', notes: 'Mental reset break', category: 'Break Time'},
+                {time: '1:00-5:00', activity: 'Luxury Business Deep Work', type: 'luxury', notes: 'High-value clients, deals', category: 'Core Work'},
+                {time: '5:00-6:00', activity: 'Admin Catchup', type: 'luxury', notes: 'Emails, scheduling', category: 'Business Prep'},
+                {time: '6:00-8:00', activity: 'Music Production', type: 'creative', notes: 'Beats, recording, editing', category: 'Creative Time'},
+                {time: '8:00+', activity: 'Social Time', type: 'personal', notes: 'Connect with people', category: 'Evening'},
+            ],
+            wed: [
+                {time: '6:30-7:30', activity: 'Dog Walk + Breakfast', type: 'personal', notes: 'Non-negotiable anchor', category: 'Morning Routine'},
+                {time: '7:30-9:00', activity: 'Pre-market Prep', type: 'luxury', notes: 'Email, inventory, research', category: 'Business Prep'},
+                {time: '9:30-12:30', activity: 'Trading Session', type: 'trading', notes: 'Phone OFF, hyperfocus mode', category: 'Core Work'},
+                {time: '12:30-1:30', activity: 'Dog Walk + Lunch', type: 'personal', notes: 'Mental reset break', category: 'Break Time'},
+                {time: '1:30-4:30', activity: 'Luxury Business Block', type: 'luxury', notes: 'Clients, deals, marketing', category: 'Core Work'},
+                {time: '4:30-5:00', activity: 'Business Wrap', type: 'luxury', notes: 'Close loops, set priorities', category: 'Business Prep'},
+                {time: '5:00-6:30', activity: 'Rap Practice', type: 'creative', notes: 'Writing, freestyles, drills', category: 'Creative Time'},
+                {time: '6:30-7:30', activity: 'Gym Class', type: 'personal', notes: 'External accountability', category: 'Movement'},
+                {time: '7:30+', activity: 'Dinner + Chill', type: 'personal', notes: 'Meal delivery, relax', category: 'Evening'},
+            ],
+            thu: [
+                {time: '6:30-7:30', activity: 'Dog Walk + Breakfast', type: 'personal', notes: 'Non-negotiable anchor', category: 'Morning Routine'},
+                {time: '8:00-11:30', activity: 'Zoom Classes', type: 'teaching', notes: 'Calendly scheduled', category: 'Teaching'},
+                {time: '12:00-1:00', activity: 'Dog Walk + Lunch', type: 'personal', notes: 'Mental reset break', category: 'Break Time'},
+                {time: '1:00-5:00', activity: 'Luxury Business Deep Work', type: 'luxury', notes: 'High-value clients, deals', category: 'Core Work'},
+                {time: '5:00-6:00', activity: 'Admin Catchup', type: 'luxury', notes: 'Emails, scheduling', category: 'Business Prep'},
+                {time: '6:00-8:00', activity: 'Music Production', type: 'creative', notes: 'Beats, recording, editing', category: 'Creative Time'},
+                {time: '8:00+', activity: 'Social Time', type: 'personal', notes: 'Connect with people', category: 'Evening'},
+            ],
+            fri: [
+                {time: '6:30-7:30', activity: 'Dog Walk + Breakfast', type: 'personal', notes: 'Non-negotiable anchor', category: 'Morning Routine'},
+                {time: '7:30-9:00', activity: 'Pre-market Prep', type: 'luxury', notes: 'Email, inventory, research', category: 'Business Prep'},
+                {time: '9:30-12:30', activity: 'Trading Session', type: 'trading', notes: 'Phone OFF, hyperfocus mode', category: 'Core Work'},
+                {time: '12:30-1:30', activity: 'Dog Walk + Lunch', type: 'personal', notes: 'Mental reset break', category: 'Break Time'},
+                {time: '1:30-4:30', activity: 'Luxury Business Block', type: 'luxury', notes: 'Clients, deals, marketing', category: 'Core Work'},
+                {time: '4:30-5:00', activity: 'Business Wrap', type: 'luxury', notes: 'Close loops, set priorities', category: 'Business Prep'},
+                {time: '5:00-6:30', activity: 'Rap Practice', type: 'creative', notes: 'Writing, freestyles, drills', category: 'Creative Time'},
+                {time: '6:30-7:30', activity: 'Gym Class', type: 'personal', notes: 'External accountability', category: 'Movement'},
+                {time: '8:00+', activity: 'Cypher Night', type: 'creative', notes: 'Replace ASAP when it ends!', category: 'Evening'},
+            ],
+            sat: [
+                {time: 'Morning', activity: 'Long Dog Adventure', type: 'personal', notes: 'Hike, dog park, mental clarity', category: 'Morning Routine'},
+                {time: '10:00-2:00', activity: 'Business Planning', type: 'luxury', notes: 'Weekly review, next week prep', category: 'Strategy'},
+                {time: '2:00-5:00', activity: 'Rap Practice + Feedback', type: 'creative', notes: 'Battle prep if upcoming', category: 'Creative Time'},
+                {time: 'Evening', activity: 'Meal Prep or Social', type: 'personal', notes: 'Prep for week or hang out', category: 'Evening'},
+            ],
+            sun: [
+                {time: 'All Day', activity: 'OFF DAY - Rest & Recharge', type: 'personal', notes: 'No schedule except dog care. Creative binge allowed. Zero business!', category: 'Rest Day'},
+            ]
+        };
+
+        const encouragements = [
+            "Way to go, Dimi! 🔥",
+            "Beast mode activated! 💪",
+            "Let's gooo! 🚀",
+            "You're crushing it! 🎯",
+            "Unstoppable! ⚡",
+            "That's what I'm talking about! 🙌",
+            "Keep that momentum! 💥",
+            "Built different! 🏆",
+            "Another one! 🔥",
+            "Locked in! 🎯"
+        ];
+
+        let currentDay = 'mon';
+        let completedTasks = new Set();
+        
+        const categoryColors = {
+            trading: '#FF6B6B',
+            luxury: '#4ECDC4',
+            creative: '#B794F6',
+            teaching: '#F59E0B',
+            personal: '#06B6D4'
+        };
+        
+        // Initialize
+        function init() {
+            try {
+                console.log('Initializing app...');
+                loadProgress();
+                setCurrentDay(); // Auto-detect today
+                console.log('Current day:', currentDay);
+                renderDayNav();
+                updateDateDisplay();
+                renderSchedule();
+                
+                // Add button event listeners
+                document.getElementById('resetBtn').addEventListener('click', resetDay);
+                document.getElementById('saveBtn').addEventListener('click', saveProgress);
+                
+                console.log('App initialized successfully');
+                
+                // Auto-save
+                setInterval(saveProgress, 120000);
+                window.addEventListener('beforeunload', saveProgress);
+            } catch (error) {
+                console.error('Error initializing app:', error);
+                // Show error to user
+                const content = document.getElementById('content');
+                if (content) {
+                    content.innerHTML = `
+                        <div style="padding: 40px 20px; text-align: center; color: #ff6b6b;">
+                            <div style="font-size: 3em; margin-bottom: 16px;">⚠️</div>
+                            <div style="font-size: 1.1em; font-weight: 700; margin-bottom: 8px;">Oops! Something went wrong</div>
+                            <div style="font-size: 0.9em; color: #888;">Try refreshing the page</div>
+                            <div style="font-size: 0.8em; color: #666; margin-top: 16px;">${error.message}</div>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        function loadProgress() {
+            const saved = localStorage.getItem('dimiDomination');
+            if (saved) {
+                const data = JSON.parse(saved);
+                completedTasks = new Set(data.completed || []);
+                document.getElementById('streakCount').textContent = data.streak || 0;
+            }
+        }
+        
+        function saveProgress(event) {
+            if (navigator.vibrate) navigator.vibrate(30);
+            
+            const data = {
+                completed: Array.from(completedTasks),
+                streak: parseInt(document.getElementById('streakCount').textContent),
+                lastSaved: new Date().toISOString()
+            };
+            localStorage.setItem('dimiDomination', JSON.stringify(data));
+            
+            // Visual feedback only if called from button click
+            if (event && event.target) {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Saved!';
+                btn.style.background = '#27ae60';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 1500);
+            } else {
+                showToast('Progress saved! ✓');
+            }
+        }
+        
+        function updateDateDisplay() {
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('en-US', options);
+        }
+        
+        function renderDayNav() {
+            const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+            const dayLabels = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+            const today = new Date().getDay();
+            const todayMap = {0: 'sun', 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat'};
+            const todayDay = todayMap[today];
+            
+            const nav = document.getElementById('dayNav');
+            nav.innerHTML = days.map((day, i) => {
+                const isToday = todayDay === day;
+                return `<div class="day-chip ${isToday ? 'today' : ''}" data-day="${day}">${dayLabels[i]}</div>`;
+            }).join('');
+            
+            document.querySelectorAll('.day-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    currentDay = chip.dataset.day;
+                    renderSchedule();
+                    updateDayNav();
+                    if (navigator.vibrate) navigator.vibrate(30);
+                });
+            });
+        }
+        
+        function setCurrentDay() {
+            const today = new Date().getDay();
+            const dayMap = {0: 'sun', 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat'};
+            currentDay = dayMap[today];
+        }
+        
+        function updateDayNav() {
+            document.querySelectorAll('.day-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.dataset.day === currentDay);
+            });
+            
+            // Scroll active day into view
+            setTimeout(() => {
+                const activeChip = document.querySelector('.day-chip.active');
+                if (activeChip) {
+                    activeChip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }, 100);
+        }
+        
+        function renderSchedule() {
+            updateDayNav();
+            const schedule = schedules[currentDay];
+            const content = document.getElementById('content');
+            
+            console.log('Rendering schedule for:', currentDay);
+            
+            if (!schedule || schedule.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-emoji">🌙</div>
+                        <div class="empty-text">Rest Day</div>
+                        <div class="empty-subtext">Enjoy your time off!</div>
+                    </div>
+                `;
+                updateProgress();
+                return;
+            }
+            
+            // Group by category
+            const grouped = {};
+            schedule.forEach(task => {
+                if (!grouped[task.category]) grouped[task.category] = [];
+                grouped[task.category].push(task);
+            });
+            
+            let html = getMotivationalBanner();
+            
+            Object.entries(grouped).forEach(([category, tasks]) => {
+                const firstTask = tasks[0];
+                html += `
+                    <div class="category-section">
+                        <div class="category-header">
+                            <div class="category-icon" style="background: ${categoryColors[firstTask.type]}"></div>
+                            <div class="category-title">${category}</div>
+                        </div>
+                `;
+                
+                tasks.forEach((task, index) => {
+                    const taskId = `${currentDay}-${schedule.indexOf(task)}`;
+                    const isCompleted = completedTasks.has(taskId);
+                    
+                    html += `
+                        <div class="task-card ${task.type} ${isCompleted ? 'completed' : ''}" data-task-id="${taskId}">
+                            <div class="task-main">
+                                <div class="checkbox-container">
+                                    <div class="custom-checkbox ${isCompleted ? 'checked' : ''}" data-task-id="${taskId}"></div>
+                                </div>
+                                <div class="task-content">
+                                    <div class="task-time">${task.time}</div>
+                                    <div class="task-title">${task.activity}</div>
+                                    <div class="task-notes">${task.notes}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+            });
+            
+            content.innerHTML = html;
+            console.log('Schedule rendered, adding event listeners');
+            
+            // Add click handlers using event delegation
+            addTaskEventListeners();
+            addSwipeGestures();
+            updateProgress();
+        }
+        
+        function addTaskEventListeners() {
+            // Use event delegation on the content div
+            const content = document.getElementById('content');
+            
+            content.addEventListener('click', (e) => {
+                const checkbox = e.target.closest('.custom-checkbox');
+                if (checkbox) {
+                    const taskId = checkbox.getAttribute('data-task-id');
+                    if (taskId) {
+                        toggleTask(taskId);
+                    }
+                }
+            });
+        }
+        
+        function addSwipeGestures() {
+            document.querySelectorAll('.task-card:not(.completed)').forEach(card => {
+                let startX = 0;
+                
+                card.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                });
+                
+                card.addEventListener('touchend', (e) => {
+                    const endX = e.changedTouches[0].clientX;
+                    if (endX - startX > 100) {
+                        const taskId = card.dataset.taskId;
+                        toggleTask(taskId);
+                    }
+                });
+            });
+        }
+        
+        function toggleTask(taskId) {
+            if (completedTasks.has(taskId)) {
+                completedTasks.delete(taskId);
+            } else {
+                completedTasks.add(taskId);
+                playSound();
+                triggerConfetti();
+                showToast(encouragements[Math.floor(Math.random() * encouragements.length)]);
+                if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+            }
+            renderSchedule();
+        }
+        
+        function getMotivationalBanner() {
+            const schedule = schedules[currentDay];
+            const total = schedule.length;
+            const completed = Array.from(completedTasks).filter(id => id.startsWith(currentDay)).length;
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            if (percentage === 100) {
+                return '<div class="motivation-banner">🎉 PERFECT DAY! You\'re unstoppable, Dimi!</div>';
+            } else if (percentage >= 80) {
+                return '<div class="motivation-banner">🔥 Almost there! Finish strong!</div>';
+            } else if (percentage >= 50) {
+                return '<div class="motivation-banner">💪 Halfway done! Keep that energy up!</div>';
+            } else if (completed > 0) {
+                return '<div class="motivation-banner">⚡ Great start! Keep the momentum going!</div>';
+            } else {
+                return '<div class="motivation-banner">🎯 Let\'s dominate today, Dimi!</div>';
+            }
+        }
+        
+        function updateProgress() {
+            const schedule = schedules[currentDay];
+            const total = schedule.length;
+            const completed = Array.from(completedTasks).filter(id => id.startsWith(currentDay)).length;
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            // Update circle
+            const circle = document.getElementById('progressCircle');
+            const circumference = 2 * Math.PI * 34;
+            const offset = circumference - (percentage / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+            
+            // Update text
+            document.getElementById('progressText').textContent = percentage + '%';
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('totalCount').textContent = total;
+            
+            // Check for streak increment
+            if (percentage === 100) {
+                const lastDate = localStorage.getItem('lastPerfectDay');
+                const today = new Date().toDateString();
+                if (lastDate !== today) {
+                    incrementStreak();
+                    localStorage.setItem('lastPerfectDay', today);
+                }
+            }
+        }
+        
+        function incrementStreak() {
+            const streakElement = document.getElementById('streakCount');
+            const currentStreak = parseInt(streakElement.textContent);
+            streakElement.textContent = currentStreak + 1;
+            saveProgress();
+        }
+        
+        function resetDay() {
+            const tasksToRemove = Array.from(completedTasks).filter(id => id.startsWith(currentDay));
+            tasksToRemove.forEach(id => completedTasks.delete(id));
+            renderSchedule();
+            if (navigator.vibrate) navigator.vibrate(100);
+            showToast('Day reset!');
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+        
+        function playSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {
+                // Sound failed, not critical
+            }
+        }
+        
+        function triggerConfetti() {
+            const colors = ['#FF6B6B', '#4ECDC4', '#B794F6', '#F59E0B', '#06B6D4'];
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animation = `confettiFall ${2 + Math.random()}s ease-out`;
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+        
+        // Wait for DOM to be fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            // DOM already loaded, init immediately
+            init();
+        }
+        
+        // Safety fallback: if still showing loading after 2 seconds, force render
+        setTimeout(() => {
+            const content = document.getElementById('content');
+            if (content && content.innerHTML.includes('Loading schedule')) {
+                console.warn('Forcing schedule render due to timeout');
+                try {
+                    renderSchedule();
+                } catch (e) {
+                    console.error('Force render failed:', e);
+                    content.innerHTML = `
+                        <div style="padding: 40px 20px; text-align: center;">
+                            <div style="font-size: 3em; margin-bottom: 16px;">😕</div>
+                            <div style="font-size: 1.1em; font-weight: 700; margin-bottom: 8px; color: #fff;">Having trouble loading</div>
+                            <div style="font-size: 0.9em; color: #888; margin-bottom: 16px;">Please refresh the page</div>
+                            <button onclick="location.reload()" style="padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 0.9em;">Refresh</button>
+                        </div>
+                    `;
+                }
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
