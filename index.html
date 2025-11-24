@@ -274,7 +274,7 @@
         /* Content */
         .content {
             padding: 16px;
-            padding-bottom: 100px;
+            padding-bottom: 70px;
         }
         
         /* Motivational Banner */
@@ -486,24 +486,23 @@
             left: 0;
             right: 0;
             background: #0f0f0f;
-            padding: 16px;
+            padding: 12px 16px;
             border-top: 1px solid rgba(255,255,255,0.05);
             display: flex;
-            gap: 12px;
+            justify-content: center;
             box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
         }
         
         .btn {
-            flex: 1;
-            padding: 15px;
+            padding: 10px 24px;
             border: none;
-            border-radius: 14px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 0.9em;
+            font-size: 0.8em;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
         }
         
         .btn-secondary {
@@ -515,17 +514,6 @@
         .btn-secondary:active {
             background: #222;
             transform: scale(0.95);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #ffffff;
-            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-primary:active {
-            transform: scale(0.95);
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
         }
         
         /* Toast Notification */
@@ -647,8 +635,7 @@
     </div>
     
     <div class="bottom-actions">
-        <button class="btn btn-secondary" id="resetBtn">Reset</button>
-        <button class="btn btn-primary" id="saveBtn">Save</button>
+        <button class="btn btn-secondary" id="clearBtn">Clear Today</button>
     </div>
     
     <div class="toast" id="toast"></div>
@@ -750,16 +737,24 @@
                 console.log('Current day:', currentDay);
                 renderDayNav();
                 updateDateDisplay();
-                renderSchedule();
                 
-                // Add button event listeners
-                document.getElementById('resetBtn').addEventListener('click', resetDay);
-                document.getElementById('saveBtn').addEventListener('click', saveProgress);
+                // Set up event listeners ONCE
+                setupEventListeners();
+                
+                // Add button event listener
+                document.getElementById('clearBtn').addEventListener('click', clearToday);
+                
+                // Render the schedule
+                renderSchedule();
                 
                 console.log('App initialized successfully');
                 
-                // Auto-save
-                setInterval(saveProgress, 120000);
+                // Auto-save every 2 minutes (backup)
+                setInterval(() => {
+                    console.log('Auto-saving (interval)...');
+                    saveProgress();
+                }, 120000);
+                
                 window.addEventListener('beforeunload', saveProgress);
             } catch (error) {
                 console.error('Error initializing app:', error);
@@ -787,29 +782,14 @@
             }
         }
         
-        function saveProgress(event) {
-            if (navigator.vibrate) navigator.vibrate(30);
-            
+        function saveProgress() {
             const data = {
                 completed: Array.from(completedTasks),
                 streak: parseInt(document.getElementById('streakCount').textContent),
                 lastSaved: new Date().toISOString()
             };
             localStorage.setItem('dimiDomination', JSON.stringify(data));
-            
-            // Visual feedback only if called from button click
-            if (event && event.target) {
-                const btn = event.target;
-                const originalText = btn.textContent;
-                btn.textContent = '✓ Saved!';
-                btn.style.background = '#27ae60';
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.style.background = '';
-                }, 1500);
-            } else {
-                showToast('Progress saved! ✓');
-            }
+            console.log('Progress auto-saved:', data.completed.length, 'tasks completed');
         }
         
         function updateDateDisplay() {
@@ -922,22 +902,24 @@
             });
             
             content.innerHTML = html;
-            console.log('Schedule rendered, adding event listeners');
+            console.log('Schedule rendered');
             
-            // Add click handlers using event delegation
-            addTaskEventListeners();
+            // Don't re-add listeners - they're already set up in init()
             addSwipeGestures();
             updateProgress();
         }
         
-        function addTaskEventListeners() {
-            // Use event delegation on the content div
+        function setupEventListeners() {
+            // Set up event delegation ONCE for all checkboxes
             const content = document.getElementById('content');
             
             content.addEventListener('click', (e) => {
                 const checkbox = e.target.closest('.custom-checkbox');
                 if (checkbox) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     const taskId = checkbox.getAttribute('data-task-id');
+                    console.log('Checkbox clicked, taskId:', taskId);
                     if (taskId) {
                         toggleTask(taskId);
                     }
@@ -964,15 +946,24 @@
         }
         
         function toggleTask(taskId) {
+            console.log('Toggling task:', taskId, 'Current state:', completedTasks.has(taskId));
+            
             if (completedTasks.has(taskId)) {
                 completedTasks.delete(taskId);
+                console.log('Task unchecked');
             } else {
                 completedTasks.add(taskId);
                 playSound();
                 triggerConfetti();
                 showToast(encouragements[Math.floor(Math.random() * encouragements.length)]);
                 if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+                console.log('Task checked');
             }
+            
+            // Auto-save immediately after each change
+            saveProgress();
+            
+            // Re-render to show updated state
             renderSchedule();
         }
         
@@ -1030,12 +1021,13 @@
             saveProgress();
         }
         
-        function resetDay() {
+        function clearToday() {
             const tasksToRemove = Array.from(completedTasks).filter(id => id.startsWith(currentDay));
             tasksToRemove.forEach(id => completedTasks.delete(id));
+            saveProgress(); // Auto-save after clearing
             renderSchedule();
             if (navigator.vibrate) navigator.vibrate(100);
-            showToast('Day reset!');
+            showToast('Today cleared!');
         }
         
         function showToast(message) {
